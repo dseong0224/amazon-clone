@@ -3,6 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 //lets us use .env file
 require("dotenv").config();
+//import routes
+const userRoutes = require("./routes/user");
 
 //app
 const app = express();
@@ -22,10 +24,8 @@ mongoose.connection.on("error", (err) => {
   console.log(`DB connection error: ${err.message}`);
 });
 
-//routes
-app.get("/", (req, res) => {
-  res.send("hello from node with live update using nodemon");
-});
+//routes middleware
+app.use("/api",userRoutes);
 
 const port = process.env.PORT || 8000;
 
