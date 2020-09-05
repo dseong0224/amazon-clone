@@ -30,14 +30,17 @@ exports.signin = (req, res) => {
   //User.findOne({email:email},...)...
   User.findOne({ email }, (err, user) => {
     if (err || !user) {
-      return res.status(400).json({ // 400 Bad request error status
+      return res.status(400).json({
+        // 400 Bad request error status
         err: "User with this email does not exist. Please signup",
       });
     }
     //if user is found make sure the email and password match
     //create authenticate method in user model
-    if (!user.authenticate(password)) { // if password is wrong
-      return res.status(401).json({ // 401 unauthorized error status
+    if (!user.authenticate(password)) {
+      // if password is wrong
+      return res.status(401).json({
+        // 401 unauthorized error status
         error: "Email and password don't match",
       });
     }
@@ -52,4 +55,9 @@ exports.signin = (req, res) => {
     const { _id, name, email, role } = user;
     return res.json({ token, user: { _id, email, name, role } });
   });
+};
+
+exports.signout = (req, res) => {
+  res.clearCookie("t");
+  res.json({ message: "Signout successful" });
 };
