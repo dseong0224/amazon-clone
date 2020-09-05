@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       required: true,
       maxLength: 32,
-      unique: true
+      unique: true,
     },
     hashed_password: {
       type: String,
@@ -54,6 +54,11 @@ userSchema
   });
 
 userSchema.methods = {
+  authenticate: function (plainText) { //plaintext here is the use input password
+    return this.encryptPassword(plainText) === this.hashed_password;
+    //return true if password match, else return false
+  },
+
   encryptPassword: function (password) {
     if (!password) return "";
     try {
