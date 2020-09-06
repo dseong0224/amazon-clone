@@ -1,3 +1,10 @@
+// this is where we define the actions of
+// signup : creates new user using required User model from models/user and saves user info without sending the salt and hashed pw for security
+// signin : finds the user of the provided email and checkeds for password match - creates webtoken and cookie using user credentials, if pw doesn't match throws error
+// signout : clears cookie and throws signout message
+// requireSignin : defines method that requires user sign in
+// isAuth : defines method that requires user to be authorized to access
+// isAdmin : defines method that requires user to be admin to access
 const User = require("../models/user");
 const jwt = require("jsonwebtoken"); //to generate signed token
 const expressJwt = require("express-jwt"); //for authorization check
@@ -18,16 +25,11 @@ exports.signup = (req, res) => {
       user,
     });
   });
-};
+}; //returns the user info response to the client
 
 exports.signin = (req, res) => {
   //find the user based on email
-
-  //const email = req.body.email;
-  //const password = req.body.password;
   const { email, password } = req.body;
-
-  //User.findOne({email:email},...)...
   User.findOne({ email }, (err, user) => {
     if (err || !user) {
       return res.status(400).json({
@@ -55,7 +57,7 @@ exports.signin = (req, res) => {
     const { _id, name, email, role } = user;
     return res.json({ token, user: { _id, email, name, role } });
   });
-};
+}; //returns the token + user info (id, name, email, role) response to the client
 
 exports.signout = (req, res) => {
   res.clearCookie("t");
@@ -64,6 +66,25 @@ exports.signout = (req, res) => {
 
 exports.requireSignin = expressJwt({
   secret: process.env.JWT_SECRET,
-  algorithms: ["HS256"], // added later due to dependncy updates
+  algorithms: ["HS256"], // added later due to dependency updates
   userProperty: "auth",
 });
+
+exports.isAuth = (req, res, next) => {
+  let user = req.profile && req.auth && req.profile._id == req.auth._id;
+  if (!user) {
+    return res.status(403).json({//403 Forbidden - source user is not allowed to access
+      error: "Access denied",
+    });
+  }
+  next();
+};
+
+exports.isAdmin = (req, res, next) => {
+  if (req.profile.role === 0) {
+    return res.status(403).json({//403 Forbidden - source user is not allowed to access
+      error: "Admin Privilage",
+    });
+  }
+  next();
+};
