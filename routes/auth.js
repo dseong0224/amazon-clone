@@ -8,6 +8,7 @@ const {
   signout,
   requireSignin,
 } = require("../controllers/auth");
+
 const { userSignupValidator } = require("../validator/index");
 
 //use imported function to make request
