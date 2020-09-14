@@ -30,6 +30,7 @@ const Signin = () => {
     event.preventDefault();
     setUserDetails({ ...userDetails, error: false, loading: true });
     signin({ email, password }).then((data) => {
+      console.log("data", data);
       if (data.error) {
         setUserDetails({ ...userDetails, error: data.error, loading: false });
       } else {
@@ -73,6 +74,7 @@ const Signin = () => {
       className="alert alert-danger"
       style={{ display: error ? "" : "none" }}
     >
+      {console.log(error)}
       {error}
     </div>
   );

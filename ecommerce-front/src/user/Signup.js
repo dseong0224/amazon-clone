@@ -47,6 +47,7 @@ const Signup = () => {
 
   const signUpForm = () => (
     <form>
+      <h3>Create account</h3>
       <div className="form-group">
         <label className="text-muted">Name</label>
         <input
@@ -76,6 +77,7 @@ const Signup = () => {
           value={password}
         />
       </div>
+
       <button onClick={clickSubmit} className="btn btn-info col-md-12">
         Sign Up
       </button>
