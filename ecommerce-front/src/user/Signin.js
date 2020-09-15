@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 import Layout from "../core/Layout";
-import { signin } from "../auth";
+import { signin, authenticate } from "../auth";
 
 const Signin = () => {
   const [userDetails, setUserDetails] = useState({
@@ -34,9 +34,11 @@ const Signin = () => {
       if (data.error) {
         setUserDetails({ ...userDetails, error: data.error, loading: false });
       } else {
-        setUserDetails({
-          ...userDetails,
-          redirectToReferrer: true,
+        authenticate(data, () => {
+          setUserDetails({
+            ...userDetails,
+            redirectToReferrer: true,
+          });
         });
       }
     });

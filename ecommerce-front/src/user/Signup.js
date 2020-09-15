@@ -79,7 +79,7 @@ const Signup = () => {
       </div>
 
       <button onClick={clickSubmit} className="btn btn-info col-md-12">
-        Sign Up
+        Create your account
       </button>
     </form>
   );
