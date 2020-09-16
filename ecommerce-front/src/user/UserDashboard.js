@@ -11,7 +11,7 @@ const Dashboard = () => {
   const userInfo = () => {
     return (
       <div className="card">
-        <h4 className="card-header">User Information</h4>
+        <h4 className="card-header">User Details</h4>
         <ul className="list-group">
           <li className="list-group-item">{name}</li>
           <li className="list-group-item">{email}</li>
@@ -26,7 +26,7 @@ const Dashboard = () => {
   const userLinks = () => {
     return (
       <div className="card mb-5">
-        <h4 className="card-header">User Links</h4>
+        <h4 className="card-header">User Actions</h4>
         <ul className="list-group">
           <li className="list-group-item">
             <Link className="nav-link" to="/cart">
