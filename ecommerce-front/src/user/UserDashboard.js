@@ -10,7 +10,7 @@ const Dashboard = () => {
 
   const userInfo = () => {
     return (
-      <div className="card">
+      <div className="card mb-5">
         <h4 className="card-header">User Details</h4>
         <ul className="list-group">
           <li className="list-group-item">{name}</li>
