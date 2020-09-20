@@ -52,15 +52,23 @@ const AddCategory = () => {
 
   const showSuccess = () => {
     if (success) {
-      return <h3 className="text-success">{name} is created</h3>;
+      return <h3 className="text-success">Category {name} is created</h3>;
     }
   };
 
   const showError = () => {
     if (error) {
-      return <h3 className="text-danger">{name} should be unique</h3>;
+      return <h3 className="text-danger">Category {name} should be unique</h3>;
     }
   };
+
+  const goBack = () => (
+    <div className="mt-5">
+      <Link to="/admin/dashboard" className="text-warning">
+        Back to Dashboard
+      </Link>
+    </div>
+  );
 
   return (
     <Layout
@@ -73,6 +81,7 @@ const AddCategory = () => {
           {showSuccess()}
           {showError()}
           {newCategoryForm()}
+          {goBack()}
         </div>
       </div>
     </Layout>
