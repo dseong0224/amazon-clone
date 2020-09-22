@@ -27,12 +27,22 @@ export const createProduct = (userId, token, product) => {
       Accept: "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(product),
+    body: product,
   })
     .then((res) => {
       return res.json();
     })
     .catch((err) => {
-      console.log(err);
+      console.log("err: ", err);
     });
+};
+
+export const getCategories = () => {
+  return fetch(`${API}/categories`, {
+    method: "GET",
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .catch((err) => console.log(err));
 };
