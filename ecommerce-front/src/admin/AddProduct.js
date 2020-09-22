@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import Layout from "../core/Layout";
 import { isAuthenticated } from "../auth";
 import { Link } from "react-router-dom";
-import { createProduct } from "./apiAdmin";
+import { createProduct, getCategories } from "./apiAdmin";
 
 const AddProduct = () => {
-  const { user, token } = isAuthenticated();
   const [productDetails, setProductDetails] = useState({
     name: "",
     description: "",
@@ -17,10 +16,12 @@ const AddProduct = () => {
     photo: "",
     loading: false,
     error: "",
-    createProduct: "",
+    createdProduct: "",
     redirectToProfile: false,
     formData: "",
   });
+
+  const { user, token } = isAuthenticated();
 
   const {
     name,
@@ -32,13 +33,28 @@ const AddProduct = () => {
     quantity,
     loading,
     error,
-    createProduct,
+    createdProduct,
     redirectToProfile,
     formData,
   } = productDetails;
 
+  //load categories and set form data
+  const init = () => {
+    getCategories().then((data) => {
+      if (data.error) {
+        setProductDetails({ ...productDetails, error: data.error });
+      } else {
+        setProductDetails({
+          ...productDetails,
+          categories: data,
+          formData: new FormData(),
+        });
+      }
+    });
+  };
+
   useEffect(() => {
-    setProductDetails({ ...productDetails, formData: new FormData() });
+    init();
   }, []);
 
   const handleChange = (name) => (event) => {
@@ -48,7 +64,52 @@ const AddProduct = () => {
     setProductDetails({ ...productDetails, [name]: productDetail });
   };
 
-  const clickSubmit = (event) => {};
+  const clickSubmit = (event) => {
+    event.preventDefault();
+    setProductDetails({ ...productDetails, error: "", loading: true });
+    createProduct(user._id, token, formData).then((data) => {
+      if (data.error) {
+        setProductDetails({ ...productDetails, error: data.error });
+      } else {
+        setProductDetails({
+          ...productDetails,
+          name: "",
+          description: "",
+          price: "",
+          quantity: "",
+          photo: "",
+          loading: false,
+          error: "",
+          createdProduct: data.name,
+        });
+      }
+    });
+  };
+
+  const showError = () => (
+    <div
+      className="alert alert-danger"
+      style={{ display: error ? "" : "none" }}
+    >
+      {error}
+    </div>
+  );
+
+  const showSuccess = () => (
+    <div
+      className="alert alert-info"
+      style={{ display: createdProduct ? "" : "none" }}
+    >
+      <h2>{createdProduct} has been created</h2>
+    </div>
+  );
+
+  const showLoading = () =>
+    loading && (
+      <div className="alert alert-success">
+        <h2>Loading...</h2>
+      </div>
+    );
 
   const newPostForm = () => (
     <form className="mb-3" onSubmit={clickSubmit}>
@@ -99,14 +160,23 @@ const AddProduct = () => {
           type="text"
           className="form-control"
         >
-          <option value="5f66a726f63bb40818dd26ef"></option>
+          {/* maps through the array of categories and renders drop down */}
+          <option>--- Select ---</option>
+          {categories &&
+            categories.map((category, i) => (
+              <option key={i} value={category._id}>
+                {category.name}
+              </option>
+            ))}
         </select>
       </div>
       <div className="form-group">
         <label className="text-muted">Product needs shipping</label>
         <select onChange={handleChange("shipping")} className="form-control">
-          <option value="0">No</option>
+          {/* maps through the array of boolean options and renders drop down */}
+          <option>--- Select ---</option>
           <option value="1">Yes</option>
+          <option value="0">No</option>
         </select>
       </div>
       <div className="form-group">
@@ -121,14 +191,20 @@ const AddProduct = () => {
       <button className="btn btn-outline-primary">Create new product</button>
     </form>
   );
+
   return (
     <Layout
       title="Add a new product"
-      description={`Welcome back ${user.name}, ready to add a new category?`}
+      description={`Welcome back ${user.name}, ready to add a product to your inventory?`}
       className="container"
     >
       <div className="row">
-        <div className="col-md-8 offset-md-2">{newPostForm()}</div>
+        <div className="col-md-8 offset-md-2">
+          {showLoading()}
+          {showError()}
+          {showSuccess()}
+          {newPostForm()}
+        </div>
       </div>
     </Layout>
   );
