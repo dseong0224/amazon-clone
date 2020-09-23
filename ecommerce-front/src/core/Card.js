@@ -3,9 +3,8 @@ import { Link } from "react-router-dom";
 import CardImage from "./CardImage";
 
 const Card = ({ product }) => {
-  console.log("product: ", product);
   return (
-    <div className="col-4 mb-3">
+    <div className="col-3 mb-3">
       <div className="card">
         <div className="card-header">{product.name}</div>
         <div className="card-body">
