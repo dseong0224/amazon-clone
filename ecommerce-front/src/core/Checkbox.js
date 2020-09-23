@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const Checkbox = ({ categories }) => {
+const Checkbox = ({ categories, handleFilters }) => {
   //define state of checked categories as an array
   const [checkedCategories, setcheckedCategories] = useState([]);
 
@@ -8,15 +8,15 @@ const Checkbox = ({ categories }) => {
     //return the first index or -1
     const currentCategoryId = checkedCategories.indexOf(category);
     const updatedCheckedCategories = [...checkedCategories];
-    //if currently checkedCategories was not already in checkedCategories state > push
-    //else pull/take off
     if (currentCategoryId === -1) {
       updatedCheckedCategories.push(category);
+      //if currently checkedCategories was not already in checkedCategories state > push to category to array
     } else {
       updatedCheckedCategories.splice(currentCategoryId, 1);
+      //else splice category off
     }
-    console.log(updatedCheckedCategories);
     setcheckedCategories(updatedCheckedCategories);
+    handleFilters(updatedCheckedCategories);
   };
 
   return categories.map((category, i) => (
