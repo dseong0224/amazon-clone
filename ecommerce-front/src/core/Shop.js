@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Layout from "./Layout";
 import Card from "./Card";
-import { getCategories } from "./apiCore";
+import { getCategories, getFilteredProducts } from "./apiCore";
 import Checkbox from "./Checkbox";
 import RadioBox from "./RadioBox";
-import { prices } from "./fixedPrices";
+import { priceRanges } from "./fixedPriceRanges";
 
 const Shop = () => {
   const [myFilters, setMyFilters] = useState({
@@ -13,6 +13,9 @@ const Shop = () => {
   });
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(false);
+  const [skip, setSkip] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   const init = () => {
     getCategories().then((data) => {
@@ -24,21 +27,49 @@ const Shop = () => {
     });
   };
 
+  const updateFilteredResults = (newFilters) => {
+    getFilteredProducts(skip, limit, newFilters).then((products) => {
+      if (products.error) {
+        setError(products.error);
+      } else {
+        setFilteredProducts(products.data);
+      }
+    });
+  };
+
   useEffect(() => {
     init();
-  });
+    updateFilteredResults(skip, limit, myFilters.filters);
+  }, []);
 
   const handleFilters = (filters, filterBy) => {
-    // console.log("shop: ", filters, filterBy);
     const newFilters = { ...myFilters };
     newFilters.filters[filterBy] = filters; //sets my filter to passed in filter values
+    if (filterBy == "price") {
+      let filteredPriceMinMaxArray = handlePrice(filters); // sets filter with selected price range
+      newFilters.filters[filterBy] = filteredPriceMinMaxArray;
+    }
+    updateFilteredResults(myFilters.filters);
     setMyFilters(newFilters); //customize my filter using this setState method
+  };
+
+  const handlePrice = (selectedPriceRangeIndex) => {
+    const priceRangesArray = priceRanges;
+    let minMaxArray = [];
+    for (let priceRange in priceRangesArray) {
+      if (
+        priceRangesArray[priceRange]._id === parseInt(selectedPriceRangeIndex) // when user selects a price range
+      ) {
+        minMaxArray = priceRangesArray[priceRange].minMaxArray; // update array of min max range value
+      }
+    }
+    return minMaxArray;
   };
 
   return (
     <Layout title="Home Page" description="Search" className="container-fluid">
-      <div className="row">
-        <div className="col-4">
+      <div className="row col-10 mx-auto">
+        <div className="col-2">
           <h4>Filter by categories</h4>
           <ul>
             {/* all categories are passed in as a prop */}
@@ -48,16 +79,23 @@ const Shop = () => {
             />
           </ul>
 
-          <h4>Filter by preice range</h4>
+          <h4>Filter by price</h4>
           <div>
             {/* all categories are passed in as a prop */}
             <RadioBox
-              prices={prices}
+              priceRanges={priceRanges}
               handleFilters={(filters) => handleFilters(filters, "price")}
             />
           </div>
         </div>
-        <div className="col-8">{JSON.stringify(myFilters)}</div>
+        <div className="col-10">
+          <h2 className="mb-4">Products</h2>
+          <div className="row border-top">
+            {filteredProducts.map((product, i) => (
+              <Card key={i} product={product} />
+            ))}
+          </div>
+        </div>
       </div>
     </Layout>
   );
