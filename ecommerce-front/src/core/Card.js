@@ -5,20 +5,29 @@ import CardImage from "./CardImage";
 const Card = ({ product }) => {
   return (
     <div className="col-3 mb-3">
-      <div className="card">
-        <div className="card-header">{product.name}</div>
+      <div className="card border-right-0 border-left-0 border-top-0">
         <div className="card-body">
           <CardImage product={product} url="product" />
-          <p>{product.description}</p>
-          <p>{product.price}</p>
-          <Link to="/">
-            <button className="btn btn-outline-secondary mt-2 mb-2 mr-2">
-              View Product
-            </button>
+          <Link className="view-product-detail-btn" to="/">
+              <h5 title={product.name}>
+                {product.name.length < 25
+                  ? product.name.trim()
+                  : product.name.trim().substring(0, 25) + "..."}
+              </h5>
           </Link>
-          <button className="btn btn-outline-info mt-2 mb-2">
+
+          <p title={product.description}>
+            {product.description.length < 100
+              ? product.description.trim()
+              : product.description.trim().substring(0, 100) + " ..."}
+          </p>
+          <p>
+            $<strong>{product.price}</strong>
+          </p>
+
+          {/* <button className="btn btn-outline-info mt-2 mb-2">
             Add product to cart
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

@@ -19,6 +19,17 @@ product image on card
   margin-top: 20px;
 }
 
+.view-product-detail-btn {
+  color: #000000;
+  text-decoration: none;
+  -webkit-transition: color 0.25s; /* For Safari 3.0 to 6.0 */
+  transition: color 0.25s; /* For modern browsers */
+}
+.view-product-detail-btn:hover {
+  text-decoration: none;
+  color: #ec9522;
+}
+
 @media only screen and (max-width: 600px) {
   .jumbotron h2 {
     margin-top: 20px;
