@@ -15,7 +15,7 @@ const Shop = () => {
   const [error, setError] = useState(false);
   const [skip, setSkip] = useState(0);
   const [pageSize, setPageSize] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(4);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   const init = () => {
@@ -34,7 +34,7 @@ const Shop = () => {
         setError(products.error);
       } else {
         setFilteredProducts(products.data);
-        setPageSize(products.pageSize);
+        setPageSize(products.size);
         setSkip(0);
       }
     });
@@ -47,7 +47,7 @@ const Shop = () => {
         setError(products.error);
       } else {
         setFilteredProducts([...filteredProducts, ...products.data]);
-        setPageSize(products.pageSize);
+        setPageSize(products.size);
         setSkip(skipSize);
       }
     });
@@ -57,12 +57,15 @@ const Shop = () => {
     return (
       pageSize > 0 &&
       pageSize >= limit && (
-        <button
-          onClick={loadMoreFilteredResults}
-          className="btn btn-warning mb-5"
-        >
-          Load More
-        </button>
+        <div className="d-flex justify-content-center">
+          <button
+            type="button"
+            onClick={loadMoreFilteredResults}
+            className="btn btn-secondary btn-lg mb-5"
+          >
+            Load More
+          </button>
+        </div>
       )
     );
   };
