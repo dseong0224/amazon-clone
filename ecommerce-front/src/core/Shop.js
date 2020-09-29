@@ -14,6 +14,7 @@ const Shop = () => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(false);
   const [skip, setSkip] = useState(0);
+  const [pageSize, setPageSize] = useState(0);
   const [limit, setLimit] = useState(10);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
@@ -27,19 +28,48 @@ const Shop = () => {
     });
   };
 
-  const updateFilteredResults = (newFilters) => {
+  const loadFilteredResults = (newFilters) => {
     getFilteredProducts(skip, limit, newFilters).then((products) => {
       if (products.error) {
         setError(products.error);
       } else {
         setFilteredProducts(products.data);
+        setPageSize(products.pageSize);
+        setSkip(0);
       }
     });
   };
 
+  const loadMoreFilteredResults = () => {
+    let skipSize = skip + limit;
+    getFilteredProducts(skipSize, limit, myFilters.filters).then((products) => {
+      if (products.error) {
+        setError(products.error);
+      } else {
+        setFilteredProducts([...filteredProducts, ...products.data]);
+        setPageSize(products.pageSize);
+        setSkip(skipSize);
+      }
+    });
+  };
+
+  const loadMoreFilteredResultsButton = () => {
+    return (
+      pageSize > 0 &&
+      pageSize >= limit && (
+        <button
+          onClick={loadMoreFilteredResults}
+          className="btn btn-warning mb-5"
+        >
+          Load More
+        </button>
+      )
+    );
+  };
+
   useEffect(() => {
     init();
-    updateFilteredResults(skip, limit, myFilters.filters);
+    loadFilteredResults(skip, limit, myFilters.filters);
   }, []);
 
   const handleFilters = (filters, filterBy) => {
@@ -49,7 +79,7 @@ const Shop = () => {
       let filteredPriceMinMaxArray = handlePrice(filters); // sets filter with selected price range
       newFilters.filters[filterBy] = filteredPriceMinMaxArray;
     }
-    updateFilteredResults(myFilters.filters);
+    loadFilteredResults(myFilters.filters);
     setMyFilters(newFilters); //customize my filter using this setState method
   };
 
@@ -95,6 +125,8 @@ const Shop = () => {
               <Card key={i} product={product} />
             ))}
           </div>
+          <hr />
+          {loadMoreFilteredResultsButton()}
         </div>
       </div>
     </Layout>
