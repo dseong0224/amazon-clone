@@ -10,6 +10,9 @@ border radius
 /**
 product image on card
 **/
+.no-border {
+  border: "none";
+}
 
 .product-img {
   min-height: 100px;
