@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { signout, isAuthenticated } from "../auth";
+import Search from "./Search";
 
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
@@ -22,11 +23,17 @@ const Menu = (
       </li>
 
       <li className="nav-item">
-        <Link className="nav-link" style={isActive(history, "/shop")} to="/shop">
+        <Link
+          className="nav-link"
+          style={isActive(history, "/shop")}
+          to="/shop"
+        >
           Shop
         </Link>
       </li>
-
+      <li>
+        <Search />
+      </li>
       {isAuthenticated() && isAuthenticated().user.role === 0 && (
         <li className="nav-item">
           <Link
