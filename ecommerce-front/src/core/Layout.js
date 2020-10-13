@@ -1,6 +1,7 @@
 import React from "react";
 import Menu from "./Menu";
 import "../styles.css";
+// import Search from "./Search";
 
 const Layout = ({
   title = "Title",

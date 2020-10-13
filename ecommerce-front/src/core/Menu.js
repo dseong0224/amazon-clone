@@ -1,7 +1,10 @@
 import React, { Fragment } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { signout, isAuthenticated } from "../auth";
-import Search from "./Search";
+import { cartTotal } from "./cartHelpers";
+import IconButton from "@material-ui/core/IconButton";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
+// import Search from "./Search";
 
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
@@ -31,9 +34,19 @@ const Menu = (
           Shop
         </Link>
       </li>
-      <li>
-        <Search />
+      <li className="nav-item">
+        <Link
+          className="nav-link"
+          style={isActive(history, "/cart")}
+          to="/cart"
+        >
+          <ShoppingCartIcon />
+          <sup>
+            <small className="cart-badge">{cartTotal()}</small>
+          </sup>{" "}
+        </Link>
       </li>
+      <li>{/* <Search /> */}</li>
       {isAuthenticated() && isAuthenticated().user.role === 0 && (
         <li className="nav-item">
           <Link

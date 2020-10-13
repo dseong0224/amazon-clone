@@ -1,4 +1,5 @@
 import API from "../config";
+import queryString from "query-string";
 
 export const getProducts = (sortBy) => {
   return fetch(`${API}/products?sortBy=${sortBy}&order=desc&limit=6`, {
@@ -11,6 +12,7 @@ export const getProducts = (sortBy) => {
 };
 
 export const getCategories = () => {
+  // gets all the categories
   return fetch(`${API}/categories`, {
     method: "GET",
   })
@@ -40,4 +42,37 @@ export const getFilteredProducts = (skip, limit, filters = {}) => {
     .catch((err) => {
       console.log(err);
     });
+};
+
+export const listSearchResult = (params) => {
+  const query = queryString.stringify(params);
+  console.log("query: ", query);
+  return fetch(`${API}/products/search?${query}`, {
+    method: "GET",
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .catch((err) => console.log(err));
+};
+
+export const readSingleProduct = (productId) => {
+  // gets all the categories
+  return fetch(`${API}/product/${productId}`, {
+    method: "GET",
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .catch((err) => console.log(err));
+};
+
+export const listRelatedProducts = (productId) => {
+  return fetch(`${API}/products/related/${productId}`, {
+    method: "GET",
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .catch((err) => console.log(err));
 };

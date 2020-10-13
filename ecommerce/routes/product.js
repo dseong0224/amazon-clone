@@ -8,6 +8,7 @@ const {
   remove,
   update,
   list,
+  listSearch,
   listRelated,
   listCategories,
   listBySearch,
@@ -33,6 +34,7 @@ router.put(
   update
 );
 router.get("/products", list);
+router.get("/products/search", listSearch);
 router.get("/products/related/:productId", listRelated);
 router.get("/products/categories", listCategories);
 router.post("/products/by/search", listBySearch);

@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { getCategories } from "./apiCore";
+import { getCategories, listSearchResult } from "./apiCore";
 import Card from "./Card";
 
 const Search = () => {
   const [searchData, setSearchData] = useState({
-    categories: [],
-    category: "",
+    categories: [], // brings in all the categories to list them in search drop down
+    category: "", // stores the selected category
     search: "",
-    results: [],
+    results: [], // when search is submitted, all the products are stored in results
     searched: false,
   });
 
   const { categories, category, search, results, searched } = searchData;
 
   const loadCategories = () => {
-    getCategories().then((data) => {
-      if (data.error) {
-        console.log(data.error);
+    getCategories().then((categories) => {
+      if (categories.error) {
+        console.log(categories.error);
       } else {
-        setSearchData({ ...searchData, categories: data });
+        setSearchData({ ...searchData, categories: categories });
       }
     });
   };
@@ -27,8 +27,57 @@ const Search = () => {
     loadCategories();
   }, []);
 
-  const searchSubmit = () => {};
-  const handleChange = () => {};
+  const searchDataResult = () => {
+    // console.log(search, category);
+    if (search) {
+      listSearchResult({
+        search: search || undefined,
+        category: category,
+      }).then((res) => {
+        if (res.error) {
+          console.log(res.error);
+        } else {
+          setSearchData({ ...searchData, results: res, searched: true });
+        }
+      });
+    }
+  };
+
+  const searchSubmit = (e) => {
+    e.preventDefault();
+    searchDataResult();
+  };
+
+  const handleChange = (name) => (event) => {
+    setSearchData({
+      ...searchData,
+      [name]: event.target.value,
+      searched: false, // indicates if products have been fetched
+    });
+  };
+
+  const searchResultMessage = (searched, results) => {
+    let searchReultCount = results.length
+    if (searched && searchReultCount > 0) {
+      return `Found ${searchReultCount} products`;
+    }
+    if (searched && searchReultCount <= 0) {
+      return `No product found`;
+    }
+  }
+
+  const searchedProducts = (results = []) => {
+    return (
+      <div>
+        <p className="mt-4 mb-4">{searchResultMessage(searched, results)}</p>
+        <div className="row">
+          {results.map((searchedProduct, i) => (
+            <Card key={i} product={searchedProduct} />
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   const searchForm = () => (
     <form onSubmit={searchSubmit}>
@@ -59,10 +108,14 @@ const Search = () => {
   );
 
   return (
-    <div>
-      <div className="container mt-1 mb-1">{searchForm()}</div>
-      {/* <h2>Search Bar {JSON.stringify(categories)}</h2> */}
+    <div className="row">
+      <div className="container mb-3">{searchForm()}</div>
+      <div className="container-fluid mb-3">{searchedProducts(results)}</div>
     </div>
+    // <div>
+    //   <div className="container mt-1 mb-1">{searchForm()}</div>
+    //   <div className="container mt-1 mb-1">{searchedProducts(results)}</div>
+    // </div>
   );
 };
 export default Search;
