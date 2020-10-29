@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Layout from "./Layout";
 import { getCart } from "./cartHelpers";
 import CartItemCard from "./CartItemCard";
-import Checkout from "./Checkout"
+import { isAuthenticated } from "../auth";
 
 const Cart = () => {
   const [run, setRun] = useState(false);
@@ -16,7 +16,7 @@ const Cart = () => {
   const showItems = (items) => {
     return (
       <div>
-        <h2>Your cart has {items.length} items.</h2>
+        <h2>Shopping Cart</h2>
         <hr />
         {items.map((product, i) => (
           <CartItemCard
@@ -38,6 +38,24 @@ const Cart = () => {
     </h2>
   );
 
+  const getTotal = (products) => {
+    return products.reduce((currentValue, nextValue) => {
+      return currentValue + nextValue.count * nextValue.price;
+    }, 0);
+  };
+
+  const proceedToCheckout = () => {
+    return isAuthenticated() ? (
+      <Link to="/checkout" products={items}>
+        <button className="btn btn-primary">Proceed to checkout</button>
+      </Link>
+    ) : (
+      <Link to="/signin">
+        <button className="btn btn-primary">Sign-In to proceed</button>
+      </Link>
+    );
+  };
+
   return (
     <Layout
       title="Shopping Cart"
@@ -45,11 +63,13 @@ const Cart = () => {
       className="container-fluid"
     >
       <div className="row">
-        <div className="col-10 mx-auto">
+        <div className="col-8 mx-auto">
           {items.length > 0 ? showItems(items) : noItemsMessage()}
         </div>
-        <div className="col-2">
-          <p>show checkout options/shipping address/total/update quantity</p>
+        <div className="col-3">
+          <h3 className="mt-4 mb-2">Subtotal ({items.length} itmes):</h3>
+          <h2 className="mb-4"><strong>${getTotal(items)}</strong></h2>
+          {proceedToCheckout()}
         </div>
       </div>
     </Layout>
