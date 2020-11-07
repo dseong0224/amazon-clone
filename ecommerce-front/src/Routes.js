@@ -1,20 +1,24 @@
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import Signup from "./user/Signup";
-import Signin from "./user/Signin";
-import Home from "./core/Home";
+
 import PrivateRoute from "./auth/PrivateRoute"; //takes props and component and redirect to page only when logged in
 import AdminRoute from "./auth/AdminRoute";
 /*can reuse this component for any page with logged in use access only*/
+import Signup from "./user/Signup";
+import Signin from "./user/Signin";
 import Dashboard from "./user/UserDashboard";
 import AdminDashboard from "./user/AdminDashboard";
+import Profile from "./user/Profile";
+
 import AddCategory from "./admin/AddCategory";
 import AddProduct from "./admin/AddProduct";
+import Orders from "./admin/Orders";
+
+import Home from "./core/Home";
 import Shop from "./core/Shop";
 import Product from "./core/Product";
 import Cart from "./core/Cart";
 import Checkout from "./core/Checkout";
-import Orders from "./admin/Orders";
 
 const Routes = () => {
   return (
@@ -32,6 +36,7 @@ const Routes = () => {
         <Route path="/product/:productId" exact component={Product} />
         <Route path="/cart" exact component={Cart} />
         <Route path="/checkout" exact component={Checkout} />
+        <PrivateRoute path="/profile/:userId" exact component={Profile} />
       </Switch>
     </BrowserRouter>
   );

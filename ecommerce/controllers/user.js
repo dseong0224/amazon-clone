@@ -1,3 +1,5 @@
+const { errorHandler } = require("../helpers/dbErrorHandler");
+const { Order } = require("../models/order");
 const User = require("../models/user");
 
 //method that takes in the id of user and if exists, sends a user profile based on the request
@@ -67,4 +69,18 @@ exports.addOrderToUserHistory = (req, res, next) => {
       next();
     }
   );
+};
+
+exports.purchaseHistory = (req, res) => {
+  Order.find({ user: req.profile._id })
+    .populate("user", "_id name")
+    .sort("-created")
+    .exec((err, orders) => {
+      if (err) {
+        return res.status(400).json({
+          error: errorHandler(err),
+        });
+      }
+      res.json(orders);
+    });
 };
