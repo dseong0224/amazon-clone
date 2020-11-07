@@ -2,6 +2,20 @@ const { Order, CartItem } = require("../models/order");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 const order = require("../models/order");
 
+exports.orderById = (req, res, next, id) => {
+  Order.findById(id)
+    .populate("products.product", "name price")
+    .exec((err, order) => {
+      if (err || !order) {
+        return res.status(400).json({
+          error: errorHandler(err),
+        });
+      }
+      req.order = order;
+      next();
+    });
+};
+
 exports.create = (req, res) => {
   // console.log("CREATE ORDER: ", req.body);
   req.body.order.user = req.profile;
@@ -28,4 +42,31 @@ exports.listOrders = (req, res) => {
       }
       res.json(orders);
     });
+};
+
+exports.getOrderStatusOptions = (req, res) => {
+  res.json(Order.schema.path("status").enumValues);
+};
+
+exports.updateOrderStatus = (req, res) => {
+  console.log(
+    "ORDERID",
+    req.params.orderId,
+    "USERID",
+    req.params.userId,
+    "ORDERBODY",
+    req.body
+  );
+  Order.update(
+    { _id: req.body.orderId },
+    { $set: { status: req.body.orderStatus } },
+    (err, order) => {
+      if (err) {
+        return res.status(400).json({
+          error: errorHandler(err),
+        });
+      }
+      res.json(order);
+    }
+  );
 };
