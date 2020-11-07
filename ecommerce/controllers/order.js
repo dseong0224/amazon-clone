@@ -49,10 +49,17 @@ exports.getOrderStatusOptions = (req, res) => {
 };
 
 exports.updateOrderStatus = (req, res) => {
-  // console.log('ORDERID', req.params.orderId, 'USERID', req.params.userId)
+  console.log(
+    "ORDERID",
+    req.params.orderId,
+    "USERID",
+    req.params.userId,
+    "ORDERBODY",
+    req.body
+  );
   Order.update(
     { _id: req.body.orderId },
-    { $set: { status: req.body.status } },
+    { $set: { status: req.body.orderStatus } },
     (err, order) => {
       if (err) {
         return res.status(400).json({
