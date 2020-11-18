@@ -4,7 +4,7 @@ import { signout, isAuthenticated } from "../auth";
 import { cartTotal } from "./cartHelpers";
 import IconButton from "@material-ui/core/IconButton";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
-// import Search from "./Search";
+// import SearchForm from "./SearchForm";
 
 const isActive = (history, path) => {
   if (history.location.pathname === path) {
@@ -46,7 +46,9 @@ const Menu = (
           </sup>{" "}
         </Link>
       </li>
-      <li>{/* <Search /> */}</li>
+
+      {/* <li><SearchForm /></li> */}
+
       {isAuthenticated() && isAuthenticated().user.role === 0 && (
         <li className="nav-item">
           <Link
@@ -112,4 +114,4 @@ const Menu = (
   </div>
 );
 
-export default withRouter(Menu);
+// export default withRouter(Menu);
