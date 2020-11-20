@@ -45,21 +45,28 @@ const Cart = () => {
   };
 
   const proceedToCheckout = () => {
-    return isAuthenticated() ? (
-      <Link to="/checkout" products={items}>
-        <button className="btn btn-primary">Proceed to checkout</button>
-      </Link>
-    ) : (
-      <Link to="/signin">
-        <button className="btn btn-primary">Sign-In to proceed</button>
-      </Link>
-    );
+    let proceedToCheckoutButton = null;
+
+    if (isAuthenticated() && items.length > 0) {
+      proceedToCheckoutButton = (
+        <Link to="/checkout" products={items}>
+          <button className="btn btn-primary">Proceed to checkout</button>
+        </Link>
+      );
+    } else if (!isAuthenticated() && items.length > 0) {
+      proceedToCheckoutButton = (
+        <Link to="/signin">
+          <button className="btn btn-primary">Sign-In to proceed</button>
+        </Link>
+      );
+    }
+    return proceedToCheckoutButton;
   };
 
   return (
     <Layout
       title="Shopping Cart"
-      description="Manage itmes in the cart. Add, remove, checkout or continue shopping"
+      description="Manage items in the cart. Add, remove, checkout or continue shopping"
       className="container-fluid"
     >
       <div className="row">
@@ -68,7 +75,9 @@ const Cart = () => {
         </div>
         <div className="col-3">
           <h3 className="mt-4 mb-2">Subtotal ({items.length} itmes):</h3>
-          <h2 className="mb-4"><strong>${getTotal(items)}</strong></h2>
+          <h2 className="mb-4">
+            <strong>${getTotal(items)}</strong>
+          </h2>
           {proceedToCheckout()}
         </div>
       </div>
