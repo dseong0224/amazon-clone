@@ -1,19 +1,17 @@
-import React from "react";
-// import Menu from "./Menu";
-import "../styles.css";
-import { useEffect, useState } from "react";
-import { getCategories, listSearchResult } from "./apiCore";
-import Card from "./Card";
-import SearchResults from "./Search";
-import { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
+//import styles
+import "../styles.css";
+import layoutStyle from "../layout-style";
+//import components
+import { getCategories, listSearchResult } from "./apiCore";
 import { signout, isAuthenticated } from "../auth";
 import { cartTotal } from "./cartHelpers";
-import IconButton from "@material-ui/core/IconButton";
-// import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-
+import Card from "./Card";
+import SearchResults from "./Search";
+//import material ui core elements
 import { makeStyles } from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -21,14 +19,15 @@ import InputBase from "@material-ui/core/InputBase";
 import Badge from "@material-ui/core/Badge";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-// import MenuIcon from "@material-ui/icons/Menu";
+//import material ui icons
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
-
-import layoutStyle from "../layout-style";
+// import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
+// import MenuIcon from "@material-ui/icons/Menu";
 
 const Layout = ({
   title = "Title",
@@ -114,55 +113,64 @@ const Layout = ({
     );
   };
 
-  const searchForm = () => (
-    <form onSubmit={searchSubmit}>
-      <span className="input-group-text">
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <select className="btn mr-2" onChange={handleChange("category")}>
-              <option value="All">All</option>
-              {categories.map((category, i) => (
-                <option key={i} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <input
-            type="search"
-            className="form-control"
-            onChange={handleChange("search")}
-            placeholder="Search by name"
-          />
-        </div>
-        <div className="btn input-group-append no-border">
-          <button className="input-group-text">
-            <SearchIcon />
-          </button>
-        </div>
-      </span>
-    </form>
-  );
-
+  const searchForm = () => {
+    let currentLocation = window.location.pathname;
+    let searchBox = null;
+    if (
+      currentLocation.includes("admin") ||
+      currentLocation.includes("user") ||
+      currentLocation.includes("cart") ||
+      currentLocation.includes("checkout") ||
+      currentLocation.includes("orders")
+    ) {
+      return searchBox;
+    } else {
+      return (
+        <form onSubmit={searchSubmit}>
+          <span className="input-group-text">
+            <div className="input-group">
+              <div className="input-group-prepend">
+                <select
+                  className="btn mr-2"
+                  onChange={handleChange("category")}
+                >
+                  <option value="All">All</option>
+                  {categories.map((category, i) => (
+                    <option key={i} value={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <input
+                type="search"
+                className="form-control"
+                onChange={handleChange("search")}
+                placeholder="Search by name"
+              />
+            </div>
+            <div className="btn input-group-append no-border">
+              <button className="input-group-text">
+                <SearchIcon />
+              </button>
+            </div>
+          </span>
+        </form>
+      );
+    }
+  };
   //------------------------------------------------------------------------Material UI Render Logic------------------------------------------------------------------------
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-
   // mobile version
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
-
   // mobile version
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
-  };
-
-  // mobile version
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
   };
 
   const handleMenuClose = () => {
@@ -174,6 +182,9 @@ const Layout = ({
   // mobile version
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
   };
 
   const menuId = "primary-search-account-menu";
@@ -289,24 +300,7 @@ const Layout = ({
               Amazon
             </Link>
           </Typography>
-
-          {/* <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              type="search"
-              onChange={handleChange("search")}
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div> */}
           <div> {searchForm()}</div>
-
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton
@@ -350,10 +344,6 @@ const Layout = ({
       {renderMenu}
       <div className="row">
         <SearchResults searched={searched} results={results} />
-      </div>
-      <div className="jumbotron">
-        <h2>{title}</h2>
-        <p className="lead">{description}</p>
       </div>
       <div className={className}>{children}</div>
     </div>
