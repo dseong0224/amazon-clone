@@ -301,6 +301,13 @@ const Layout = ({
             </Link>
           </Typography>
           <div> {searchForm()}</div>
+            <Link
+              className="nav-link"
+              style={isActive(history, "/shop")}
+              to="/shop"
+            >
+              Shop
+            </Link>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton
